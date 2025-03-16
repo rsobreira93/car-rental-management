@@ -1,0 +1,15 @@
+@baseUrl = http://localhost:8080
+
+#@name create USER
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "Romulo",
+  "document": "10176372452",
+  "email": "test@mail1.com.r2",
+  "password": "123456789",
+  "phone": "83981314690",
+  "address": "rua mauri lira, numero 48",
+  "role": "ROLE_ADMIN"
+}
