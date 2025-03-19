@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class RestExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExists.class)
-    public ProblemDetail handlePicPayException(UserAlreadyExists e) {
+    public ProblemDetail handleUserAlreadyExistsException(UserAlreadyExists e) {
         return e.toProblemDetail();
     }
 
