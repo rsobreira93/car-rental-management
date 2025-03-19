@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.AuthUserRequestDTO;
+import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.AuthUserResponseDTO;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.CreateUserRequestDTO;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.CreateUserResponseDTO;
+import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.AuthUserService;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.CreateUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +30,9 @@ public class UserController {
     @Autowired
     private CreateUserService createUserService;
 
+    @Autowired
+    private AuthUserService authUserService;
+
     @PostMapping
     @Operation(summary = "Cadastro de usuário", description = "Essa função é responsável por cadastrar um usuário")
     @ApiResponses({
@@ -40,6 +46,14 @@ public class UserController {
 
         return ResponseEntity.ok(result);
 
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<AuthUserResponseDTO> auth(@RequestBody AuthUserRequestDTO authUserRequestDTO)
+            throws Exception {
+        var token = this.authUserService.execute(authUserRequestDTO);
+
+        return ResponseEntity.ok(token);
     }
 
 }

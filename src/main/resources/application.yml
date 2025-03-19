@@ -26,4 +26,4 @@ spring:
       
 security:
   token:
-    secret: ${JWT_SECRET:my-default-secret} 
+    secret: ${JWT_SECRET:secret} 
