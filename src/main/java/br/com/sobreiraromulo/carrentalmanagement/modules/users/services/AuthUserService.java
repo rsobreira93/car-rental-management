@@ -32,14 +32,14 @@ public class AuthUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AuthUserResponseDTO execute(AuthUserRequestDTO authUserRequestDTO) throws Exception {
+    public AuthUserResponseDTO execute(AuthUserRequestDTO authUserRequestDTO) throws AuthException {
         var user = this.userRepository.findByEmail(authUserRequestDTO.email())
-                .orElseThrow(() -> new Exception("Email/password invalid"));
+                .orElseThrow(() -> new AuthException("Email/password invalid"));
 
         var passwordMatches = this.passwordEncoder.matches(authUserRequestDTO.password(), user.getPassword());
 
         if (!passwordMatches) {
-            throw new AuthException();
+            throw new AuthException("Email/password invalid");
         }
 
         Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
@@ -49,12 +49,13 @@ public class AuthUserService {
         var token = JWT.create()
                 .withIssuer("cartRentalManagement")
                 .withSubject(user.getId().toString())
-                .withClaim("roles", Arrays.asList(user.getRole().toString()))
+                .withClaim("roles", Arrays.asList(user.getRole().name()))
                 .withExpiresAt(expires_in)
                 .sign(algorithm);
 
-        var authCandidateResponse = new AuthUserResponseDTO(token, expires_in.toEpochMilli());
+        var authUserResponse = new AuthUserResponseDTO(token, expires_in.toEpochMilli(), user.getId(),
+                user.getRole().name());
 
-        return authCandidateResponse;
+        return authUserResponse;
     }
 }

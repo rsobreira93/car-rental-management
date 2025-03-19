@@ -2,12 +2,28 @@ package br.com.sobreiraromulo.carrentalmanagement.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import jakarta.security.auth.message.AuthException;
+
 @RestControllerAdvice
 public class RestExceptionHandler {
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ProblemDetail> handleAuthException(AuthException e) {
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+        pd.setTitle("Authentication Error");
+        pd.setDetail(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(pd);
+    }
+
+    @ExceptionHandler(UserNotFound.class)
+    public ProblemDetail handleUserNotFoundException(UserNotFound e) {
+        return e.toProblemDetail();
+    }
 
     @ExceptionHandler(UserAlreadyExists.class)
     public ProblemDetail handleUserAlreadyExistsException(UserAlreadyExists e) {

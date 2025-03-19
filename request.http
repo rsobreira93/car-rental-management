@@ -1,4 +1,6 @@
 @baseUrl = http://localhost:8080
+@authToken = {{authenticate.response.body.access_token}}
+
 
 #@name create USER
 POST {{baseUrl}}/users
@@ -16,6 +18,7 @@ Content-Type: application/json
 
 
 ###############
+# @name authenticate
 POST {{baseUrl}}/users/auth
 Content-Type: application/json
 
@@ -23,3 +26,10 @@ Content-Type: application/json
   "email": "test@mail1.com.r2",
   "password": "Romulo$$14"
 }
+
+
+####
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
