@@ -13,7 +13,7 @@ public class SamePasswordException extends CartRentalManagementException {
     @Override
     public ProblemDetail toProblemDetail() {
         ProblemDetail pb = ProblemDetail.forStatus(HttpStatus.CONFLICT);
-        pb.setTitle("Password same last used");
+        pb.setTitle("Cannot use the same password as last one.");
         pb.setDetail(detail);
         return pb;
     }

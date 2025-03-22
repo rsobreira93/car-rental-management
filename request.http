@@ -40,3 +40,16 @@ Content-Type: application/json
 GET {{baseUrl}}/users?query=test@mail.com&page=0&size=10
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
+
+####
+# @name Update users
+PUT {{baseUrl}}/users/94b23ad6-7a4b-40b6-b763-133119a297e9
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Romulo Sobreira",
+  "email": "test@mail1.com.r2",
+  "address": "Rua dos bobos, número 0",
+  "phone": "84921441987"
+}

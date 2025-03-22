@@ -1,11 +1,11 @@
 package br.com.sobreiraromulo.carrentalmanagement.modules.users.services;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.com.sobreiraromulo.carrentalmanagement.exceptions.SamePasswordException;
 import br.com.sobreiraromulo.carrentalmanagement.exceptions.UserNotFound;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.UpdateUserRequestDTO;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.entities.UserEntity;
@@ -29,11 +29,13 @@ public class UpdateUserService {
                     throw new UserNotFound("User not found");
                 });
 
-        var passwordHashed = this.passwordEncoder.encode(updateUser.password());
+        Optional.ofNullable(updateUser.name()).ifPresent(user::setName);
+        Optional.ofNullable(updateUser.phone()).ifPresent(user::setPhone);
+        Optional.ofNullable(updateUser.email()).ifPresent(user::setEmail);
+        Optional.ofNullable(updateUser.address()).ifPresent(user::setAddress);
 
-        if (passwordHashed.equals(user.getPassword())) {
-            throw new SamePasswordException("Password cannot be the same as the last password");
-        }
+        this.userRepository.save(user);
+
     }
 
 }
