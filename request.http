@@ -36,6 +36,7 @@ Content-Type: application/json
 
 ####
 # @name list users
-GET {{baseUrl}}/users?page=0&size=10&sort=name,asc
+# @description /users?query=00100200345&page=0&size=10
+GET {{baseUrl}}/users?query=test@mail.com&page=0&size=10
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
