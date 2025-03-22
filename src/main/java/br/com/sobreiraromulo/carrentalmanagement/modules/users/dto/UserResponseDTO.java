@@ -1,4 +1,4 @@
-package br.com.sobreiraromulo.carrentalmanagement.modules.users.controllers.dto;
+package br.com.sobreiraromulo.carrentalmanagement.modules.users.dto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,7 +18,7 @@ public record UserResponseDTO(
 
                 @Schema(description = "Papel do usuário", example = "ROLE_USER") String role,
 
-                @Schema(description = "Data de criação do usuário", example = "2025-12-12") LocalDateTime createdAt) {
+                @Schema(description = "Data de criação do usuário", example = "2025-12-31T00:00:00.0000") LocalDateTime createdAt) {
 
         public static UserResponseDTO fromEntity(UserEntity userEntity) {
                 return new UserResponseDTO(userEntity.getId(), userEntity.getName(), userEntity.getEmail(),

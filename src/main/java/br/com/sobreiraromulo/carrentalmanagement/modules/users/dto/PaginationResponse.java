@@ -1,4 +1,4 @@
-package br.com.sobreiraromulo.carrentalmanagement.modules.users.controllers.dto;
+package br.com.sobreiraromulo.carrentalmanagement.modules.users.dto;
 
 import org.springframework.data.domain.Page;
 
