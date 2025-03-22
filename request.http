@@ -33,3 +33,9 @@ GET {{baseUrl}}/users/profile
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
+
+####
+# @name list users
+GET {{baseUrl}}/users?page=0&size=10&sort=name,asc
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
