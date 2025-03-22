@@ -27,6 +27,7 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.ListUser
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.ProfileUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -42,86 +43,84 @@ import jakarta.validation.Valid;
 
 public class UserController {
 
-        @Autowired
-        private CreateUserService createUserService;
+    @Autowired
+    private CreateUserService createUserService;
 
-        @Autowired
-        private AuthUserService authUserService;
+    @Autowired
+    private AuthUserService authUserService;
 
-        @Autowired
-        private ProfileUserService profileUserService;
+    @Autowired
+    private ProfileUserService profileUserService;
 
-        @Autowired
-        private ListUsersService listUsersService;
+    @Autowired
+    private ListUsersService listUsersService;
 
-        @PostMapping
-        @Operation(summary = "Cadastro de usuário", description = "Essa função é responsável por cadastrar um usuário")
-        @ApiResponses({
-                        @ApiResponse(responseCode = "200", content = {
-                                        @Content(schema = @Schema(implementation = CreateUserResponseDTO.class))
-                        }),
-                        @ApiResponse(responseCode = "409", description = "Usuário já existe")
-        })
-        public ResponseEntity<CreateUserResponseDTO> createUser(@Valid @RequestBody CreateUserRequestDTO userEntity) {
-                var result = this.createUserService.execute(userEntity);
+    @PostMapping
+    @Operation(summary = "Cadastro de usuário", description = "Essa função é responsável por cadastrar um usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = CreateUserResponseDTO.class))
+            }),
+            @ApiResponse(responseCode = "409", description = "Usuário já existe")
+    })
+    public ResponseEntity<CreateUserResponseDTO> createUser(@Valid @RequestBody CreateUserRequestDTO userEntity) {
+        var result = this.createUserService.execute(userEntity);
 
-                return ResponseEntity.ok(result);
+        return ResponseEntity.ok(result);
 
-        }
+    }
 
-        @PostMapping("/auth")
-        @Operation(summary = "Login do usuário", description = "Essa função é responsável por autenticar o usuário")
-        @ApiResponses({
-                        @ApiResponse(responseCode = "200", content = {
-                                        @Content(schema = @Schema(implementation = AuthUserRequestDTO.class))
-                        }),
-                        @ApiResponse(responseCode = "401", description = "Email/password incorrect")
-        })
-        public ResponseEntity<AuthUserResponseDTO> auth(@RequestBody AuthUserRequestDTO authUserRequestDTO)
-                        throws AuthException {
-                var token = this.authUserService.execute(authUserRequestDTO);
+    @PostMapping("/auth")
+    @Operation(summary = "Login do usuário", description = "Essa função é responsável por autenticar o usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = AuthUserRequestDTO.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "Email/password incorrect")
+    })
+    public ResponseEntity<AuthUserResponseDTO> auth(@RequestBody AuthUserRequestDTO authUserRequestDTO)
+            throws AuthException {
+        var token = this.authUserService.execute(authUserRequestDTO);
 
-                return ResponseEntity.ok(token);
-        }
+        return ResponseEntity.ok(token);
+    }
 
-        @GetMapping("/profile")
-        @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-        @Operation(summary = "Perfil do candidato", description = "Essa função é responsável por buscar as informações do perfil do candidato")
-        @ApiResponses({
-                        @ApiResponse(responseCode = "200", content = {
-                                        @Content(schema = @Schema(implementation = ProfileUserResponseDTO.class))
-                        }),
-                        @ApiResponse(responseCode = "400", description = "User not found")
-        })
-        @SecurityRequirement(name = "jwt_auth")
-        public ResponseEntity<ProfileUserResponseDTO> getProfile(HttpServletRequest request) {
-                var userId = request.getAttribute("user_id");
+    @GetMapping("/profile")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('EMPLOYEE')")
+    @Operation(summary = "Perfil do candidato", description = "Essa função é responsável por buscar as informações do perfil do candidato")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = ProfileUserResponseDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "User not found")
+    })
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<ProfileUserResponseDTO> getProfile(HttpServletRequest request) {
+        var userId = request.getAttribute("user_id");
 
-                var profile = this.profileUserService.execute(UUID.fromString(userId.toString()));
+        var profile = this.profileUserService.execute(UUID.fromString(userId.toString()));
 
-                return ResponseEntity.ok(profile);
-        }
+        return ResponseEntity.ok(profile);
+    }
 
-        @GetMapping
-        @PreAuthorize("hasRole('ADMIN')")
-        @Operation(summary = "Lista usuários paginados", description = "Lista usuários com paginação, ordenação e metadados.")
-        @ApiResponses({
-                        @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
-                        @ApiResponse(responseCode = "403", description = "Acesso negado"),
-                        @ApiResponse(responseCode = "400", description = "Parâmetros inválidos na requisição")
-        })
-        @SecurityRequirement(name = "jwt_auth")
-        public ResponseEntity<PaginatedResponse<UserResponseDTO>> listUsers(
-                        @RequestParam(name = "query", required = false) String query,
-                        @RequestParam(name = "page", defaultValue = "0") Integer page,
-                        @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-                PageRequest pageRequest = PageRequest.of(page, pageSize);
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
+    @Operation(summary = "Lista usuários paginados", description = "Lista usuários com paginação, ordenação e metadados.")
+    @ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Acesso negado", content = @Content(examples = @ExampleObject(value = "Invalid Token."))),
+    })
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<PaginatedResponse<UserResponseDTO>> listUsers(
+            @RequestParam(name = "query", required = false) String query,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
 
-                var pageResponse = listUsersService.execute(query, pageRequest);
+        var pageResponse = listUsersService.execute(query, pageRequest);
 
-                return ResponseEntity.ok(new PaginatedResponse<>(
-                                pageResponse.getContent(),
-                                PaginationResponse.fromPage(pageResponse)));
-        }
+        return ResponseEntity.ok(new PaginatedResponse<>(
+                pageResponse.getContent(),
+                PaginationResponse.fromPage(pageResponse)));
+    }
 
 }

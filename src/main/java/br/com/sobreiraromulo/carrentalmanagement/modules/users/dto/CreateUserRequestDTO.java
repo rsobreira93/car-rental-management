@@ -15,7 +15,7 @@ public record CreateUserRequestDTO(
 
                 @NotBlank(message = "Password is required.") @Size(min = 8, message = "password must be at least 8 characters") @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).+$", message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.") String password,
 
-                @Size(max = 15, message = "Phone number cannot exceed 15 characters.") String phone,
+                @Size(min = 11, max = 14, message = "Phone number must be between 11 and 14 characters. Example: with 11, 119XXXX-YYYY. with 14: +55119XXXX-YYYY") String phone,
 
                 @NotBlank(message = "Address is required.") String address,
 
