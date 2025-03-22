@@ -3,7 +3,6 @@ package br.com.sobreiraromulo.carrentalmanagement.modules.users.services;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.sobreiraromulo.carrentalmanagement.exceptions.UserNotFound;
@@ -16,11 +15,8 @@ public class UpdateUserService {
 
     private UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder;
-
-    public UpdateUserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UpdateUserService(UserRepository userRepositorys) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public void execute(UUID userId, UpdateUserRequestDTO updateUser) {
