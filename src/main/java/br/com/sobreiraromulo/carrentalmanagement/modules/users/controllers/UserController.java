@@ -3,14 +3,19 @@ package br.com.sobreiraromulo.carrentalmanagement.modules.users.controllers;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.sobreiraromulo.carrentalmanagement.modules.users.controllers.dto.PaginatedResponse;
+import br.com.sobreiraromulo.carrentalmanagement.modules.users.controllers.dto.PaginationResponse;
+import br.com.sobreiraromulo.carrentalmanagement.modules.users.controllers.dto.UserResponseDTO;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.AuthUserRequestDTO;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.AuthUserResponseDTO;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.CreateUserRequestDTO;
@@ -18,6 +23,7 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.CreateUserRes
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.ProfileUserResponseDTO;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.AuthUserService;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.CreateUserService;
+import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.ListUsersService;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.ProfileUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,6 +50,9 @@ public class UserController {
 
         @Autowired
         private ProfileUserService profileUserService;
+
+        @Autowired
+        private ListUsersService listUsersService;
 
         @PostMapping
         @Operation(summary = "Cadastro de usuário", description = "Essa função é responsável por cadastrar um usuário")
@@ -91,6 +100,25 @@ public class UserController {
                 var profile = this.profileUserService.execute(UUID.fromString(userId.toString()));
 
                 return ResponseEntity.ok(profile);
+        }
+
+        @GetMapping
+        @PreAuthorize("hasRole('ADMIN')")
+        @Operation(summary = "Lista usuários paginados", description = "Lista usuários com paginação, ordenação e metadados.")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
+                        @ApiResponse(responseCode = "403", description = "Acesso negado"),
+                        @ApiResponse(responseCode = "400", description = "Parâmetros inválidos na requisição")
+        })
+        @SecurityRequirement(name = "jwt_auth")
+        public ResponseEntity<PaginatedResponse<UserResponseDTO>> listUsers(
+                        @RequestParam(name = "page", defaultValue = "0") Integer page,
+                        @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+                var pageResponse = listUsersService.execute(PageRequest.of(page, pageSize));
+
+                return ResponseEntity.ok(new PaginatedResponse<>(
+                                pageResponse.getContent(),
+                                PaginationResponse.fromPage(pageResponse)));
         }
 
 }
