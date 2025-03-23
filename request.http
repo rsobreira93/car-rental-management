@@ -59,3 +59,30 @@ Content-Type: application/json
 DELETE {{baseUrl}}/users/b4ccdb88-0595-4730-b36e-757936c733a8
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
+
+
+#####
+# @ name create car
+POST {{baseUrl}}/cars
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "brand": "CHEVROLET",
+  "model": "S-10",
+  "licensePlate": "OTM 2X22",
+  "year": "2010"
+}
+
+#####
+# @ name create car with csv
+POST {{baseUrl}}/cars/upload HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101001
+
+-----011000010111000001101001
+Content-Disposition: form-data; name="file"; filename="cars.csv"
+Content-Type: text/csv
+
+< ./cars.csv
+-----011000010111000001101001--
