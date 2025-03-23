@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.UpdateUserReq
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.dto.UserResponseDTO;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.AuthUserService;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.CreateUserService;
+import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.DeleteUserService;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.ListUsersService;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.ProfileUserService;
 import br.com.sobreiraromulo.carrentalmanagement.modules.users.services.UpdateUserService;
@@ -61,11 +63,15 @@ public class UserController {
         private ListUsersService listUsersService;
 
         @Autowired
-        UpdateUserService updateUserService;
+        private UpdateUserService updateUserService;
+
+        @Autowired
+        private DeleteUserService deleteUserService;
 
         @PostMapping
         @Operation(summary = "Cadastro de usuário", description = "Essa função é responsável por cadastrar um usuário")
         @ApiResponses({
+
                         @ApiResponse(responseCode = "200", content = {
                                         @Content(schema = @Schema(implementation = CreateUserResponseDTO.class))
                         }),
@@ -132,9 +138,28 @@ public class UserController {
         }
 
         @PutMapping("/{id}")
+        @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
+        @Operation(summary = "Atuliza um usuário", description = "Atualiza um usuario com base no seu id")
+        @ApiResponses({ @ApiResponse(responseCode = "204", description = "Usuário atualizado com sucesso"),
+                        @ApiResponse(responseCode = "401", description = "Acesso negado", content = @Content(examples = @ExampleObject(value = "Invalid Token."))),
+        })
+        @SecurityRequirement(name = "jwt_auth")
         public ResponseEntity<?> updateUser(@PathVariable UUID id,
                         @RequestBody UpdateUserRequestDTO updateUserRequestDTO) {
                 updateUserService.execute(id, updateUserRequestDTO);
+
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+
+        @DeleteMapping("/{id}")
+        @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
+        @Operation(summary = "Deleta um usuário", description = "Deleta um usuario com base no seu id")
+        @ApiResponses({ @ApiResponse(responseCode = "204", description = "Usuário Deleta com sucesso"),
+                        @ApiResponse(responseCode = "401", description = "Acesso negado", content = @Content(examples = @ExampleObject(value = "Invalid Token."))),
+        })
+        @SecurityRequirement(name = "jwt_auth")
+        public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
+                deleteUserService.execute(id);
 
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
