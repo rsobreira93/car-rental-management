@@ -37,7 +37,7 @@ Content-Type: application/json
 ####
 # @name list users
 # @description /users?query=00100200345&page=0&size=10
-GET {{baseUrl}}/users?query=test@mail.com&page=0&size=10
+GET {{baseUrl}}/users?query=test@mail1.com&page=0&size=10
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
@@ -53,3 +53,9 @@ Content-Type: application/json
   "address": "Rua dos bobos, número 0",
   "phone": "84921441987"
 }
+
+####
+# @name delete users
+DELETE {{baseUrl}}/users/b4ccdb88-0595-4730-b36e-757936c733a8
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
