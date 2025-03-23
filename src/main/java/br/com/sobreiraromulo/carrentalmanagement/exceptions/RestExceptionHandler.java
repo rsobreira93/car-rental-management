@@ -12,6 +12,16 @@ import jakarta.security.auth.message.AuthException;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
+    @ExceptionHandler(CsvException.class)
+    public ProblemDetail handleCsvException(CsvException e) {
+        return e.toProblemDetail();
+    }
+
+    @ExceptionHandler(CarAlreadyExists.class)
+    public ProblemDetail handleCarAlreadyExistsException(CarAlreadyExists e) {
+        return e.toProblemDetail();
+    }
+
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ProblemDetail> handleAuthException(AuthException e) {
         ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
