@@ -1,5 +1,6 @@
 package br.com.sobreiraromulo.carrentalmanagement.modules.users.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class ListUsersService {
     public Page<UserResponseDTO> execute(String query, PageRequest pageRequest) {
         Page<UserEntity> users;
 
-        if (query != null && !query.isEmpty()) {
+        if (StringUtils.isNotEmpty(query)) {
             users = userRepository.findByEmailOrDocument(query, pageRequest);
         } else {
             users = userRepository.findAll(pageRequest);

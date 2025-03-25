@@ -86,3 +86,11 @@ Content-Type: text/csv
 
 < ./cars.csv
 -----011000010111000001101001--
+
+
+#####
+# @name List cars
+# ?brand=Toyota&status=AVAILABLE&
+GET {{baseUrl}}/cars?page=0&pageSize=10
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
