@@ -94,3 +94,14 @@ Content-Type: text/csv
 GET {{baseUrl}}/cars?page=0&pageSize=10
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
+
+#####
+# @name List cars
+# ?brand=Toyota&status=AVAILABLE&
+PATCH {{baseUrl}}/cars/86023578-fb87-4503-b226-5f41c48e30cf
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "status": "MAINTENANCE"
+}

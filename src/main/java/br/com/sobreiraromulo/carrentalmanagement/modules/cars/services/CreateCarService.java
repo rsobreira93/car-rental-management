@@ -19,7 +19,7 @@ public class CreateCarService {
 
     public void execute(CreateCarRequestDTO createCarRequestDTO) {
         this.carRepository.findByLicensePlate(createCarRequestDTO.licensePlate())
-                .ifPresent((user -> {
+                .ifPresent((car -> {
                     throw new CarAlreadyExists("License plate already exists.");
                 }));
 
