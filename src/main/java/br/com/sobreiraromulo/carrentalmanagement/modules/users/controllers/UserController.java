@@ -47,7 +47,6 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/users")
 @Tag(name = "Usuário", description = "Informações do usuário")
-
 public class UserController {
 
         @Autowired
