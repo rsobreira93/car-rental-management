@@ -26,4 +26,10 @@ spring:
       
 security:
   token:
-    secret: ${JWT_SECRET:secret} 
+    secret: ${JWT_SECRET:secret}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans
