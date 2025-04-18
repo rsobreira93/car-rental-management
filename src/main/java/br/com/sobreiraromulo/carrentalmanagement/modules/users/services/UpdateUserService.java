@@ -13,7 +13,7 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.users.repositories.User
 @Service
 public class UpdateUserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UpdateUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -21,9 +21,7 @@ public class UpdateUserService {
 
     public void execute(UUID userId, UpdateUserRequestDTO updateUser) {
         UserEntity user = this.userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    throw new UserNotFound("User not found");
-                });
+                .orElseThrow(() -> new UserNotFound("User not found"));
 
         Optional.ofNullable(updateUser.name()).ifPresent(user::setName);
         Optional.ofNullable(updateUser.phone()).ifPresent(user::setPhone);

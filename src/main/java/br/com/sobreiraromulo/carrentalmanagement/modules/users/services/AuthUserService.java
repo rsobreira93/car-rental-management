@@ -3,6 +3,7 @@ package br.com.sobreiraromulo.carrentalmanagement.modules.users.services;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,11 +20,11 @@ import jakarta.security.auth.message.AuthException;
 @Service
 public class AuthUserService {
 
-    private String secretKey;
+    private final String secretKey;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthUserService(@Value("${security.token.secret}") String secretKey, UserRepository userRepository,
             PasswordEncoder passwordEncoder) {
@@ -49,13 +50,11 @@ public class AuthUserService {
         var token = JWT.create()
                 .withIssuer("cartRentalManagement")
                 .withSubject(user.getId().toString())
-                .withClaim("roles", Arrays.asList(user.getRole().name()))
+                .withClaim("roles", List.of(user.getRole().name()))
                 .withExpiresAt(expires_in)
                 .sign(algorithm);
 
-        var authUserResponse = new AuthUserResponseDTO(token, expires_in.toEpochMilli(), user.getId(),
+        return new AuthUserResponseDTO(token, expires_in.toEpochMilli(), user.getId(),
                 user.getRole().name());
-
-        return authUserResponse;
     }
 }

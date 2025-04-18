@@ -12,9 +12,9 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.users.repositories.User
 @Service
 public class CreateUserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public CreateUserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;

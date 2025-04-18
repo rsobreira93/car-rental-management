@@ -12,7 +12,7 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.cars.repositories.CarRe
 @Service
 public class UpdateStatusCarService {
 
-    private CarRepository carRepository;
+    private final CarRepository carRepository;
 
     public UpdateStatusCarService(CarRepository carRepository) {
         this.carRepository = carRepository;
@@ -20,9 +20,7 @@ public class UpdateStatusCarService {
 
     public void execute(UUID id, String status) {
         CarEntity car = this.carRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw new CarNotFound("Car not found with this id.");
-                });
+                .orElseThrow(() -> new CarNotFound("Car not found with this id."));
 
         System.err.println(Status.valueOf(status));
 

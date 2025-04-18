@@ -11,7 +11,7 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.users.repositories.User
 @Service
 public class DeleteUserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public DeleteUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -19,9 +19,7 @@ public class DeleteUserService {
 
     public void execute(UUID userId) {
         UserEntity user = this.userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    throw new UserNotFound("User not found");
-                });
+                .orElseThrow(() -> new UserNotFound("User not found"));
 
         this.userRepository.delete(user);
     }

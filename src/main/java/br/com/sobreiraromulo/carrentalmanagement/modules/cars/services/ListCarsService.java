@@ -13,7 +13,7 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.cars.repositories.CarRe
 @Service
 public class ListCarsService {
 
-    private CarRepository carRepository;
+    private final CarRepository carRepository;
 
     public ListCarsService(CarRepository carRepository) {
         this.carRepository = carRepository;

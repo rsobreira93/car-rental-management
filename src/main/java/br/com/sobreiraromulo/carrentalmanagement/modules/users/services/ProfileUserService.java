@@ -11,7 +11,7 @@ import br.com.sobreiraromulo.carrentalmanagement.modules.users.repositories.User
 @Service
 public class ProfileUserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public ProfileUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -19,13 +19,9 @@ public class ProfileUserService {
 
     public ProfileUserResponseDTO execute(UUID userId) {
         var user = this.userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    throw new UserNotFound("User not found");
-                });
+                .orElseThrow(() -> new UserNotFound("User not found"));
 
-        var userResponseDTO = new ProfileUserResponseDTO(user.getId(), user.getName(),
+        return new ProfileUserResponseDTO(user.getId(), user.getName(),
                 user.getEmail(), user.getRole().toString(), user.getAddress());
-
-        return userResponseDTO;
     }
 }
